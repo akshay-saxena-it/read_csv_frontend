@@ -14,12 +14,45 @@ export class DataComponent implements OnInit {
     this.showData()
   }
   public csv_data;
+  public currentPage = 0;
+  public totalPages = 1;
   showData() {
-    this.service.getData()
+    this.service.getData(this.currentPage)
       .subscribe((data) => {
-        console.log('data', data)
-        this.csv_data = data['data'];
+        console.log('data', data['result']['data'])
+        this.csv_data = data['result']['data'];
+        this.totalPages = data['result']['pages'];
+        console.log('totalPages',this.totalPages)
       });
+  }
+
+  onPrev() {
+    console.log('onPrev')
+    this.currentPage--;
+    if (this.currentPage < 0) {
+      this.currentPage = 0;
+    } else {
+      this.service.getData(this.currentPage)
+      .subscribe((data) => {
+        this.csv_data = data['result']['data'];
+        this.totalPages = data['result']['pages'];
+      });
+    }
+   
+  }
+
+  onNext() {
+    console.log('onNext')
+    this.currentPage++;
+    if (this.currentPage >= this.totalPages) {
+      this.currentPage = this.totalPages-1;
+    } else {
+      this.service.getData(this.currentPage)
+      .subscribe((data) => {
+        this.csv_data = data['result']['data'];
+        this.totalPages = data['result']['pages'];
+      });
+    }
   }
 
 }
