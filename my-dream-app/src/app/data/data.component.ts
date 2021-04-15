@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from "../app.service";
+declare var jQuery:any;
 
 @Component({
   selector: 'app-data',
@@ -19,15 +20,12 @@ export class DataComponent implements OnInit {
   showData() {
     this.service.getData(this.currentPage)
       .subscribe((data) => {
-        console.log('data', data['result']['data'])
         this.csv_data = data['result']['data'];
         this.totalPages = data['result']['pages'];
-        console.log('totalPages',this.totalPages)
       });
   }
 
   onPrev() {
-    console.log('onPrev')
     this.currentPage--;
     if (this.currentPage < 0) {
       this.currentPage = 0;
@@ -42,7 +40,6 @@ export class DataComponent implements OnInit {
   }
 
   onNext() {
-    console.log('onNext')
     this.currentPage++;
     if (this.currentPage >= this.totalPages) {
       this.currentPage = this.totalPages-1;
@@ -54,5 +51,19 @@ export class DataComponent implements OnInit {
       });
     }
   }
+
+  onClickSubmit(data) {
+    console.log("form data ", data);
+    if (data && data.open && data.close) {
+      jQuery("#exampleModal").modal("hide");
+      data['date'] = new Date();
+      console.log('data', data)
+      this.service.addData(data)
+      .subscribe((data) => {
+        console.log('data after submition', data)
+        
+      });
+    }
+ }
 
 }
