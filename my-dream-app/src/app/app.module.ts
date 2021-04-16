@@ -5,6 +5,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { DataComponent } from './data/data.component';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+
+const config: SocketIoConfig = { url: 'http://localhost:3000', options: { transports: ['websocket', 'polling', 'flashsocket'] } };
 
 @NgModule({
   declarations: [
@@ -15,6 +18,7 @@ import { DataComponent } from './data/data.component';
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    SocketIoModule.forRoot(config),
     AppRoutingModule
   ],
   providers: [],

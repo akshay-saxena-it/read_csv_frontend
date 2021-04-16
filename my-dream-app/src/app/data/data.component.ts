@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from "../app.service";
+import { Observable, Subscription } from 'rxjs';
 declare var jQuery:any;
 
 @Component({
@@ -8,6 +9,7 @@ declare var jQuery:any;
   styleUrls: ['./data.component.css']
 })
 export class DataComponent implements OnInit {
+  
 
   constructor(private service:AppService) { }
 
@@ -20,9 +22,9 @@ export class DataComponent implements OnInit {
   showData() {
     this.service.getData(this.currentPage)
       .subscribe((data) => {
-        this.csv_data = data['result']['data'];
-        this.totalPages = data['result']['pages'];
-      });
+        this.csv_data = data['data'];
+        this.totalPages = data['pages'];
+       });
   }
 
   onPrev() {
@@ -32,9 +34,10 @@ export class DataComponent implements OnInit {
     } else {
       this.service.getData(this.currentPage)
       .subscribe((data) => {
-        this.csv_data = data['result']['data'];
-        this.totalPages = data['result']['pages'];
+        this.csv_data = data['data'];
+        this.totalPages = data['pages'];
       });
+      this.service.getData(this.currentPage);
     }
    
   }
@@ -44,24 +47,21 @@ export class DataComponent implements OnInit {
     if (this.currentPage >= this.totalPages) {
       this.currentPage = this.totalPages-1;
     } else {
-      this.service.getData(this.currentPage)
-      .subscribe((data) => {
-        this.csv_data = data['result']['data'];
-        this.totalPages = data['result']['pages'];
+       this.service.getData(this.currentPage)
+       .subscribe((data) => {
+        this.csv_data = data['data'];
+         this.totalPages = data['pages'];
       });
     }
   }
 
   onClickSubmit(data) {
-    console.log("form data ", data);
     if (data && data.open && data.close) {
       jQuery("#exampleModal").modal("hide");
       data['date'] = new Date();
-      console.log('data', data)
       this.service.addData(data)
-      .subscribe((data) => {
-        console.log('data after submition', data)
-        
+      .subscribe((result) => {
+        console.log('data after submition', result)
       });
     }
  }
